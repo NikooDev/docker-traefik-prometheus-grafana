@@ -1,0 +1,19 @@
+http:
+  routers:
+    traefik-dashboard:
+      rule: "Host(`traefik.nikolasdev.com`)"
+      entryPoints:
+        - websecure
+      service: api@internal
+      tls: {}
+
+  services:
+    traefik-service:
+        loadBalancer:
+          servers:
+            - url: "http://traefik:443"
+
+tls:
+  certificates:
+    - certFile: "/etc/traefik/private/cert.cer"
+      keyFile: "/etc/traefik/private/privkey.key"

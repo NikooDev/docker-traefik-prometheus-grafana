@@ -1,0 +1,27 @@
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "81:443"
+    volumes:
+      - "./index.html:/usr/share/nginx/html/index.html"
+      - "./nginx.conf:/etc/nginx/conf.d/default.conf"
+      - "logs:/var/log/nginx:rw"
+    networks:
+      - "app-network"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nginx-router.rule=Host(`nikolasdev.com`)"
+      - "traefik.http.routers.nginx-router.entrypoints=websecure"
+      - "traefik.http.routers.nginx-router.tls=true"
+      - "traefik.http.services.nginx-service.loadbalancer.server.port=443"
+
+volumes:
+  logs:
+    external: true
+
+networks:
+  app-network:
+    external: true
